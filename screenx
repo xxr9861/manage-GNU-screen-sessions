@@ -1,0 +1,80 @@
+#! /bin/bash
+
+display_the_usage_of_the_script(){
+
+    cat <<EOF
+
+----How to use this Program-----
+
+You open many instances of screen in any of the many terminals you open
+so there are multiple sessions of screen running in different terminals
+
+You do not have to go about hunting or listing the different sessions manually
+This would display a menu of the running sessions and allows you to switch to it
+
+It takes no arguments
+
+open a terminal and type
+
+screenx 
+
+
+
+EOF
+
+    }
+
+the_number_of_arguments_to_the_script(){
+
+    some_number_here=0
+    if [ $# -ne $some_number_here ]
+    then
+	clear
+	display_the_usage_of_the_script	
+	echo "press enter to exit script"
+	read junk
+	exit
+    else
+	:
+	
+	fi
+
+    }
+
+
+determine_if_screen_is_running_current_terminal(){
+
+if [ -n "$STY" ]
+then
+echo "The current screen session is $STY"
+else
+echo "No screen session is running in current terminal"
+fi
+
+}
+
+
+
+prog(){
+determine_if_screen_is_running_current_terminal
+echo
+options=($(screen -ls | while read line; do echo $line|awk -F" " '{print $1}'| grep -i desktop ; done))
+echo "The different screen sessions with their different windows are: "
+for line in ${options[@]} ;do echo -n $line; echo $(screen -S $line -Q windows); done
+clear
+echo "Switch to another screen session"
+select opt in "${options[@]}"
+do
+
+    case $opt in
+	*)
+	   
+	    screen -D -R $opt
+	;;
+    esac
+done
+
+}
+the_number_of_arguments_to_the_script $* # the $* is needed for you to catch all those unwanted arguments
+prog
+
