@@ -16,3 +16,4 @@ open a terminal and type
 
 screenx 
 
+Note: idk, does not work, weird behaviour. 
